@@ -4,7 +4,3 @@ Aulas/
 
 # Não adicionar os tipos de arquivos
 *.pdf
-*.class
-
-# Não adicionar diversos EntradaTeclado
-EntradaTeclado.java
