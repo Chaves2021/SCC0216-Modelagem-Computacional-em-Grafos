@@ -1,0 +1,10 @@
+# Não adicionar os diretórios
+Aulas/
+*bin/
+
+# Não adicionar os tipos de arquivos
+*.pdf
+*.class
+
+# Não adicionar diversos EntradaTeclado
+EntradaTeclado.java
