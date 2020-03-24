@@ -1,6 +1,10 @@
 # Não adicionar os diretórios
-Aulas/
-*bin/
+*/bin/
 
 # Não adicionar os tipos de arquivos
 *.pdf
+
+# Não adicionar arquivos compactados
+*.zip
+*.7z
+*.tar.gz
