@@ -9,7 +9,7 @@ TEST=0
 all:
 	@$(CC) $(SRC) -o $(BIN) -I$(INCLUDES) $(OPTIONS)
 run:
-	@$(BINARY)
+	@$(BIN)
 debug:
 	@$(CC) $(SRC) -o $(BIN) -I$(INCLUDES) $(OPTIONS)
 	@valgrind --leak-check=yes $(BIN) < $(TEST)
