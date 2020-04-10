@@ -3,6 +3,7 @@
 #include <graph.h>
 #include <defines.h>
 
+//Graph struct
 struct graph
 {
 	int **matrix;
@@ -10,6 +11,7 @@ struct graph
 	int count_edges;
 };
 
+//The function returns the graph allocated
 GRAPH *graph_create(int n_vertex)
 {
 	int i;
@@ -23,6 +25,7 @@ GRAPH *graph_create(int n_vertex)
 	return graph;
 }
 
+//The function returns an int log
 int graph_edge_insert(GRAPH *graph, int vertex0, int vertex1)
 {
 	if(!graph) return ERROR;
@@ -34,6 +37,7 @@ int graph_edge_insert(GRAPH *graph, int vertex0, int vertex1)
 	return SUCCESS;
 }
 
+//The function returns an int log
 int graph_edge_remove(GRAPH *graph, int vertex0, int vertex1)
 {
 	if(!graph) return ERROR;
@@ -45,6 +49,7 @@ int graph_edge_remove(GRAPH *graph, int vertex0, int vertex1)
 	return SUCCESS;
 }
 
+//The function returns an int log
 int graph_print_matrix(GRAPH *graph)
 {
 	if(!graph) return ERROR;
@@ -60,6 +65,7 @@ int graph_print_matrix(GRAPH *graph)
 	return SUCCESS;
 }
 
+//The function returns an int log
 int graph_delete(GRAPH *graph)
 {
 	if(!graph) return ERROR;

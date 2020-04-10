@@ -5,8 +5,11 @@
 
 int main(void)
 {
+	//Number of vertex, edges and operations
 	int n_vertex, n_edges, n_op;
+	//Variables to represent 2 generic vertex
 	int vertex0, vertex1;
+	//i iterator and the actual operation to be computed
 	int i, op;
 	GRAPH *graph;
 
