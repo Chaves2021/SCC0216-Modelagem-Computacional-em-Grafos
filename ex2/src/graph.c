@@ -7,7 +7,7 @@
 //Graph struct
 struct graph
 {
-	//A dynamic list simply linked array that represents the adjancy list
+	//A dynamic list simply linked array that represents the adjacency list
 	DYN_LIST_SIMPLE **list;
 	int count_vertex;
 	int count_edges;
