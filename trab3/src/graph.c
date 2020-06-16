@@ -85,16 +85,22 @@ int graph_delete(GRAPH *graph)
 	return SUCCESS;
 }
 
-//TODO
-//think what dfs can return to see if the graph is circle or not
-int graph_dfs(GRAPH *graph)
+int graph_in_degree(GRAPH *graph, int vertex)
 {
 }
 
-int graph_is_circle(GRAPH *graph)
+int graph_out_degree(GRAPH *graph, int vertex)
+{
+}
+
+int graph_topological_order(GRAPH *graph)
+{
+}
+
+int graph_is_cyclical(GRAPH *graph)
 {
 	if(!graph) return ERROR;
 	if(!graph->list) return ERROR;
 
-	int ret = graph_dfs(graph);
+	graph_topological_order(graph) == CYCLICAL ? return TRUE : return FALSE;
 }

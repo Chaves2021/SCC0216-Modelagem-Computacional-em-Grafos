@@ -18,7 +18,7 @@ int main(void)
 		graph_edge_insert(graph, v0, v1);
 	}
 
-	if(graph_is_circle(graph)) printf("-1\n");
+	if(graph_is_cyclical(graph)) printf("-1\n");
 	else
 	{
 	}
