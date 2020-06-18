@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <graph.h>
+#include <defines.h>
 
 int main(void)
 {
