@@ -5,16 +5,9 @@
 
 struct dyn_list_simple_elem
 {
-	int elem;
-	enum status
-	{
-		not_visited,
-		visited,
-		processed
-	};
+	int value;
 	struct dyn_list_simple_elem *next;
 };
-typedef struct dyn_list_simple_elem DYN_LIST_SIMPLE_ELEM;
 
 struct dyn_list_simple
 {
@@ -36,14 +29,14 @@ int dyn_list_simple_insert(DYN_LIST_SIMPLE *list, int destination)
 	int exists = FALSE;
 
 	DYN_LIST_SIMPLE_ELEM *new = (DYN_LIST_SIMPLE_ELEM *) calloc(1, sizeof(DYN_LIST_SIMPLE_ELEM));
-	new->elem = destination;
+	new->value = destination;
 	if(!list->first && !list->last) list->first = list->last = new;
 	else
 	{
 		DYN_LIST_SIMPLE_ELEM *p = list->first;
 		while(!exists && p)
 		{
-			if(p->elem == destination) exists = TRUE;
+			if(p->value == destination) exists = TRUE;
 			else p = p->next;
 		}
 		if(!exists)
@@ -63,7 +56,7 @@ int dyn_list_simple_remove(DYN_LIST_SIMPLE *list, int vertex)
 	int isThere = FALSE;
 
 	DYN_LIST_SIMPLE_ELEM *p = list->first;
-	if(list->first->elem == vertex)
+	if(list->first->value == vertex)
 	{
 		list->first = list->first->next;
 		isThere = TRUE;
@@ -73,7 +66,7 @@ int dyn_list_simple_remove(DYN_LIST_SIMPLE *list, int vertex)
 		DYN_LIST_SIMPLE_ELEM *prev;
 		while(p->next && !isThere)
 		{
-			if(p->next->elem == vertex)
+			if(p->next->value == vertex)
 			{
 				prev = p;
 				p = p->next;
@@ -103,7 +96,7 @@ int dyn_list_simple_print(DYN_LIST_SIMPLE *list)
 	DYN_LIST_SIMPLE_ELEM *p = list->first;
 	while(p)
 	{
-		printf("%d ", p->elem);
+		printf("%d ", p->value);
 		p = p->next;
 	}
 	return SUCCESS;
