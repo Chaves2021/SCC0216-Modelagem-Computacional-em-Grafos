@@ -4,11 +4,23 @@
 #include <dyn_list_simple.h>
 #include <defines.h>
 
+struct graph_elem
+{
+	int value;
+	enum status
+	{
+		not_visited,
+		visited,
+		processed
+	}status;
+	//A dynamic list simply linked array that represents the adjacency list
+	DYN_LIST_SIMPLE *list;
+};
+
 //Graph struct
 struct graph
 {
-	//A dynamic list simply linked array that represents the adjacency list
-	DYN_LIST_SIMPLE **list;
+	GRAPH_ELEM **elem;
 	int count_vertex;
 	int count_edges;
 };
@@ -21,8 +33,12 @@ GRAPH *graph_create(int n_vertex)
 	graph = (GRAPH *) calloc(1, sizeof(GRAPH));
 
 	graph->count_vertex = n_vertex;
-	graph->list = (DYN_LIST_SIMPLE **) malloc(n_vertex * sizeof(DYN_LIST_SIMPLE *));
-	for(i = 0; i < n_vertex; i++) graph->list[i] = dyn_list_simple_create();
+	graph->elem = (GRAPH_ELEM **) malloc(n_vertex * sizeof(GRAPH_ELEM *));
+	for(i = 0; i < n_vertex; i++) 
+	{
+		graph->elem[i] = (GRAPH_ELEM *) malloc(sizeof(GRAPH_ELEM));
+		graph->elem[i]->list = dyn_list_simple_create();
+	}
 
 	return graph;
 }
@@ -31,10 +47,11 @@ GRAPH *graph_create(int n_vertex)
 int graph_edge_insert(GRAPH *graph, int vertex0, int vertex1)
 {
 	if(!graph) return ERROR;
-	if(!graph->list) return ERROR;
+	if(!graph->elem || !graph->elem[vertex0]) return ERROR;
+	if(!graph->elem[vertex0]->list) return ERROR;
 
-	dyn_list_simple_insert(graph->list[vertex0], vertex1);
-	//dyn_list_simple_insert(graph->list[vertex1], vertex0);
+	dyn_list_simple_insert(graph->elem[vertex0]->list, vertex1);
+	//dyn_list_simple_insert(graph->elem[vertex1]->list, vertex0);
 	graph->count_edges++;
 
 	return SUCCESS;
@@ -44,10 +61,11 @@ int graph_edge_insert(GRAPH *graph, int vertex0, int vertex1)
 int graph_edge_remove(GRAPH *graph, int vertex0, int vertex1)
 {
 	if(!graph) return ERROR;
-	if(!graph->list) return ERROR;
+	if(!graph->elem || !graph->elem[vertex0]) return ERROR;
+	if(!graph->elem[vertex0]->list) return ERROR;
 
-	dyn_list_simple_remove(graph->list[vertex0], vertex1);
-	dyn_list_simple_remove(graph->list[vertex1], vertex0);
+	dyn_list_simple_remove(graph->elem[vertex0]->list, vertex1);
+	//dyn_list_simple_remove(graph->elem[vertex1]->list, vertex0);
 	graph->count_edges--;
 
 	return SUCCESS;
@@ -57,13 +75,13 @@ int graph_edge_remove(GRAPH *graph, int vertex0, int vertex1)
 int graph_print_list(GRAPH *graph)
 {
 	if(!graph) return ERROR;
-	if(!graph->list) return ERROR;
+	if(!graph->elem) return ERROR;
 
 	int i;
 	for(i = 0; i < graph->count_vertex; i++) 
 	{
 		printf("%d: ", i);
-		dyn_list_simple_print(graph->list[i]);
+		dyn_list_simple_print(graph->elem[i]->list);
 		printf("\n");
 	}
 	printf("\n");
@@ -75,32 +93,38 @@ int graph_print_list(GRAPH *graph)
 int graph_delete(GRAPH *graph)
 {
 	if(!graph) return ERROR;
-	if(!graph->list) return ERROR;
+	if(!graph->elem) return ERROR;
 
 	int i;
-	for(i = 0; i < graph->count_vertex; i++) dyn_list_simple_delete(graph->list[i]);
-	free(graph->list);
+	for(i = 0; i < graph->count_vertex; i++) 
+	{
+		//TODO
+		//dyn_list_simple_delete(graph->elem[i]->list);
+		free(graph->elem[i]);
+	}
+	free(graph->elem);
 	free(graph);
 
 	return SUCCESS;
 }
 
-int graph_in_degree(GRAPH *graph, int vertex)
+//TODO
+int graph_dfs(GRAPH *graph)
 {
+	if(!graph) return ERROR;
+	if(!graph->elem) return ERROR;
 }
 
-int graph_out_degree(GRAPH *graph, int vertex)
+//TODO
+int *graph_topological_order(GRAPH *graph)
 {
-}
-
-int graph_topological_order(GRAPH *graph)
-{
+	int *sequence;
 }
 
 int graph_is_cyclical(GRAPH *graph)
 {
 	if(!graph) return ERROR;
-	if(!graph->list) return ERROR;
 
-	graph_topological_order(graph) == CYCLICAL ? return TRUE : return FALSE;
+	if(graph_dfs(graph) == CYCLICAL) return TRUE; 
+	else return FALSE;
 }
