@@ -2,6 +2,7 @@
 #define _DYN_LIST_SIMPLE_
 
 typedef struct dyn_list_simple DYN_LIST_SIMPLE;
+typedef struct dyn_list_simple_elem DYN_LIST_SIMPLE_ELEM;
 
 //Function to create a list
 DYN_LIST_SIMPLE *dyn_list_simple_create();
