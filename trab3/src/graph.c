@@ -123,22 +123,30 @@ int find_first_vertex(GRAPH *graph)
 	return CYCLICAL;
 }
 
-int *__graph_dfs(GRAPH *graph, GRAPH_ELEM *actual)
+//TODO
+//think about the return address and how to put in an array
+int __graph_dfs(GRAPH *graph, int cur_vertex, int **sequence)
 {
-	int end = FALSE;
-	int *sequence;
-	sequence = (int *) malloc(graph->count_vertex * sizeof(int));
-	while(!end)
+	DYN_LIST_SIMPLE_ELEM *next_vertex;
+
+	graph->elem[cur_vertex]->status = visited;
+	next_vertex = graph->elem[cur_vertex]->list->first;
+	while(!next_vertex)
 	{
-		graph->elem[cur_vertex]->status = visited;
-		next_vertex = graph->elem[cur_vertex]->list->first;
-		if(next_vertex->elem[cur_vertex]->status == not_visited)
+		if(graph->elem[next_vertex->value]->status == visited)
 		{
 		}
+		else if(graph->elem[next_vertex->value]->status == not_visited)
+		{
+			cur_vertex = next_vertex->value;
+			__graph_dfs(graph, cur_vertex, sequence);
+			next_vertex = next_vertex->next;
+		}
 	}
+	graph->elem[cur_vertex]->status = processed;
 }
 
-int *graph_topological_order(GRAPH *graph, int count)
+int *graph_topological_order(GRAPH *graph)
 {
 	if(!graph) return NULL;
 	if(!graph->elem) return NULL;
@@ -146,21 +154,12 @@ int *graph_topological_order(GRAPH *graph, int count)
 	int i;
 	int *sequence;
 	int cur_vertex;
-	DYN_LIST_SIMPLE_ELEM *next_vertex;
 	cur_vertex = find_first_vertex(graph);
 	if(cur_vertex == CYCLICAL) return NULL;
+	sequence = (int *) malloc(graph->count_vertex * sizeof(int));
 
-	sequence = __graph_dfs(graph, graph->elem[cur_vertex]);
+	__graph_dfs(graph, cur_vertex, &sequence);
+	return sequence;
 
 
-}
-
-int graph_is_cyclical(GRAPH *graph)
-{
-	if(!graph) return ERROR;
-
-	int *sequence;
-	sequence = graph_dfs(graph);
-	if(!sequence) return TRUE; 
-	else return FALSE;
 }

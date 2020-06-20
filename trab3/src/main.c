@@ -19,7 +19,8 @@ int main(void)
 		graph_edge_insert(graph, v0, v1);
 	}
 
-	if(graph_is_cyclical(graph)) printf("-1\n");
+	int *sequence = graph_topological_order(graph);
+	if(!sequence) printf("-1\n");
 	else
 	{
 	}
