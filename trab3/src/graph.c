@@ -13,6 +13,7 @@ struct graph_elem
 		visited,
 		processed
 	}status;
+	int in_degree, out_degree;
 	//A dynamic list simply linked array that represents the adjacency list
 	DYN_LIST_SIMPLE *list;
 };
@@ -38,6 +39,8 @@ GRAPH *graph_create(int n_vertex)
 	{
 		graph->elem[i] = (GRAPH_ELEM *) malloc(sizeof(GRAPH_ELEM));
 		graph->elem[i]->list = dyn_list_simple_create();
+		graph->elem[i]->in_degree = 0;
+		graph->elem[i]->out_degree = 0;
 	}
 
 	return graph;
@@ -51,6 +54,8 @@ int graph_edge_insert(GRAPH *graph, int vertex0, int vertex1)
 	if(!graph->elem[vertex0]->list) return ERROR;
 
 	dyn_list_simple_insert(graph->elem[vertex0]->list, vertex1);
+	graph->elem[vertex0]->out_degree++;
+	graph->elem[vertex1]->in_degree++;
 	//dyn_list_simple_insert(graph->elem[vertex1]->list, vertex0);
 	graph->count_edges++;
 
@@ -108,23 +113,54 @@ int graph_delete(GRAPH *graph)
 	return SUCCESS;
 }
 
-//TODO
-int graph_dfs(GRAPH *graph)
+int find_first_vertex(GRAPH *graph)
 {
-	if(!graph) return ERROR;
-	if(!graph->elem) return ERROR;
+	int i;
+	for(i = 0; i < graph->count_vertex; i++)
+	{
+		if(!graph->elem[i]->in_degree) return i;
+	}
+	return CYCLICAL;
 }
 
-//TODO
-int *graph_topological_order(GRAPH *graph)
+int *__graph_dfs(GRAPH *graph, GRAPH_ELEM *actual)
 {
+	int end = FALSE;
 	int *sequence;
+	sequence = (int *) malloc(graph->count_vertex * sizeof(int));
+	while(!end)
+	{
+		graph->elem[cur_vertex]->status = visited;
+		next_vertex = graph->elem[cur_vertex]->list->first;
+		if(next_vertex->elem[cur_vertex]->status == not_visited)
+		{
+		}
+	}
+}
+
+int *graph_topological_order(GRAPH *graph, int count)
+{
+	if(!graph) return NULL;
+	if(!graph->elem) return NULL;
+
+	int i;
+	int *sequence;
+	int cur_vertex;
+	DYN_LIST_SIMPLE_ELEM *next_vertex;
+	cur_vertex = find_first_vertex(graph);
+	if(cur_vertex == CYCLICAL) return NULL;
+
+	sequence = __graph_dfs(graph, graph->elem[cur_vertex]);
+
+
 }
 
 int graph_is_cyclical(GRAPH *graph)
 {
 	if(!graph) return ERROR;
 
-	if(graph_dfs(graph) == CYCLICAL) return TRUE; 
+	int *sequence;
+	sequence = graph_dfs(graph);
+	if(!sequence) return TRUE; 
 	else return FALSE;
 }
