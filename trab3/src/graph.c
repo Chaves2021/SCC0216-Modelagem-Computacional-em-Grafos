@@ -208,3 +208,31 @@ GRAPH *graph_transpose(GRAPH *graph)
 
 	return transpose;
 }
+
+int graph_steps_count(GRAPH *transpose, int *sequence)
+{
+	int steps = 0;
+	int i;
+	int flag;
+	DYN_LIST_SIMPLE_ELEM *next;
+
+	while(!check_all_vertex(transpose))
+	{
+		for(i = 0; i < transpose->count_vertex; i++)
+		{
+			next = transpose->elem[sequence[i]]->list->first;
+			flag = TRUE;
+			while(next && flag)
+			{
+				if(transpose->elem[next->value]->status != processed) flag = FALSE;
+				next = next->next;
+			}
+			if(flag && transpose->elem[sequence[i]]->status != processed) 
+			{
+				transpose->elem[sequence[i]]->status = processed;
+			}
+		}
+		steps++;
+	}
+	return steps;
+}

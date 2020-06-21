@@ -19,5 +19,7 @@ int graph_delete(GRAPH *);
 int *graph_topological_order(GRAPH *);
 //TODO
 GRAPH *graph_transpose(GRAPH *);
+//TODO
+int graph_steps_count(GRAPH *, int *);
 
 #endif
