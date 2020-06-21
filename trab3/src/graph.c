@@ -175,14 +175,12 @@ int *graph_topological_order(GRAPH *graph)
 	int index = 0;
 	int *sequence;
 	int cur_vertex;
-	cur_vertex = find_first_vertex(graph);
-	if(cur_vertex == CYCLICAL) return NULL;
 	sequence = (int *) malloc(graph->count_vertex * sizeof(int));
 
-	__graph_dfs(graph, cur_vertex, &sequence, &index);
-	while(!check_all_vertex(graph)) 
+	while(!check_all_vertex(graph) && index != -1) 
 	{
 		cur_vertex = find_first_vertex(graph);
+		if(cur_vertex == CYCLICAL) return NULL;
 		__graph_dfs(graph, cur_vertex, &sequence, &index);
 	}
 	if(index == -1) return NULL;
