@@ -16,6 +16,6 @@ int graph_print_list(GRAPH *);
 int graph_delete(GRAPH *);
 
 //TODO
-int graph_is_cyclical(GRAPH *);
+int *graph_topological_order(GRAPH *);
 
 #endif

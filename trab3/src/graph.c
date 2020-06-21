@@ -39,6 +39,7 @@ GRAPH *graph_create(int n_vertex)
 	{
 		graph->elem[i] = (GRAPH_ELEM *) malloc(sizeof(GRAPH_ELEM));
 		graph->elem[i]->list = dyn_list_simple_create();
+		graph->elem[i]->value = i;
 		graph->elem[i]->in_degree = 0;
 		graph->elem[i]->out_degree = 0;
 	}
@@ -123,27 +124,34 @@ int find_first_vertex(GRAPH *graph)
 	return CYCLICAL;
 }
 
-//TODO
-//think about the return address and how to put in an array
-int __graph_dfs(GRAPH *graph, int cur_vertex, int **sequence)
+int __graph_dfs(GRAPH *graph, int cur_vertex, int **sequence, int *index)
 {
 	DYN_LIST_SIMPLE_ELEM *next_vertex;
 
 	graph->elem[cur_vertex]->status = visited;
 	next_vertex = graph->elem[cur_vertex]->list->first;
-	while(!next_vertex)
+	while(next_vertex)
 	{
 		if(graph->elem[next_vertex->value]->status == visited)
 		{
+			*index = -1;
 		}
-		else if(graph->elem[next_vertex->value]->status == not_visited)
+		else if(graph->elem[next_vertex->value]->status == not_visited &&
+				*index != -1)
 		{
-			cur_vertex = next_vertex->value;
-			__graph_dfs(graph, cur_vertex, sequence);
+			__graph_dfs(graph, next_vertex->value, sequence, index);
 			next_vertex = next_vertex->next;
 		}
 	}
 	graph->elem[cur_vertex]->status = processed;
+	if(*index != -1)
+	{
+		//TODO
+		//printf("[%d]: %d\n", cur_vertex, graph->elem[cur_vertex]->value);
+		//Add in the index and after increment it
+		(*sequence)[(*index)++] = graph->elem[cur_vertex]->value;
+	}
+	return SUCCESS;
 }
 
 int *graph_topological_order(GRAPH *graph)
@@ -151,15 +159,16 @@ int *graph_topological_order(GRAPH *graph)
 	if(!graph) return NULL;
 	if(!graph->elem) return NULL;
 
-	int i;
+	int index = 0;
 	int *sequence;
 	int cur_vertex;
 	cur_vertex = find_first_vertex(graph);
 	if(cur_vertex == CYCLICAL) return NULL;
 	sequence = (int *) malloc(graph->count_vertex * sizeof(int));
 
-	__graph_dfs(graph, cur_vertex, &sequence);
-	return sequence;
+	__graph_dfs(graph, cur_vertex, &sequence, &index);
+	if(index == -1) return NULL;
+	else return sequence;
 
 
 }
