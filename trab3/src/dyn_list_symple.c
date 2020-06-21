@@ -89,3 +89,13 @@ int dyn_list_simple_print(DYN_LIST_SIMPLE *list)
 	return SUCCESS;
 }
 
+int dyn_list_simple_delete(DYN_LIST_SIMPLE *list)
+{
+	if(!list) return ERROR;
+	int i;
+
+	for(i = 0; i < list->n_elem; i++) dyn_list_simple_remove(list, i);
+	free(list);
+
+	return SUCCESS;
+}

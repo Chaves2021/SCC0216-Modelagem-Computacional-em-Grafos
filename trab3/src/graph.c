@@ -104,8 +104,7 @@ int graph_delete(GRAPH *graph)
 	int i;
 	for(i = 0; i < graph->count_vertex; i++) 
 	{
-		//TODO
-		//dyn_list_simple_delete(graph->elem[i]->list);
+		dyn_list_simple_delete(graph->elem[i]->list);
 		free(graph->elem[i]);
 	}
 	free(graph->elem);
@@ -114,13 +113,14 @@ int graph_delete(GRAPH *graph)
 	return SUCCESS;
 }
 
+//The function returns the first vertex to start dfs
+//If there is no vertex with in_degree == 0, so the graph is cyclical
 int find_first_vertex(GRAPH *graph)
 {
 	int i;
 	for(i = 0; i < graph->count_vertex; i++)
 	{
-		if(!graph->elem[i]->in_degree && 
-				graph->elem[i]->status == not_visited) 
+		if(!graph->elem[i]->in_degree && graph->elem[i]->status == not_visited) 
 		{
 			return i;
 		}
@@ -128,7 +128,11 @@ int find_first_vertex(GRAPH *graph)
 	return CYCLICAL;
 }
 
-int __graph_dfs(GRAPH *graph, int cur_vertex, int **sequence, int *index)
+//Function returns an int log
+//Sequence is passed by reference to store vertices as they are processed
+//index is the position of the array to store the vertex, and because of that passed by reference too
+//if some vertex is already visited, so the graph has return edges, so the graph has cycles, and index becomes -1
+int graph_dfs(GRAPH *graph, int cur_vertex, int **sequence, int *index)
 {
 	DYN_LIST_SIMPLE_ELEM *next_vertex;
 
@@ -143,7 +147,7 @@ int __graph_dfs(GRAPH *graph, int cur_vertex, int **sequence, int *index)
 		else if(graph->elem[next_vertex->value]->status == not_visited &&
 				*index != -1)
 		{
-			__graph_dfs(graph, next_vertex->value, sequence, index);
+			graph_dfs(graph, next_vertex->value, sequence, index);
 		}
 		next_vertex = next_vertex->next;
 	}
@@ -156,6 +160,7 @@ int __graph_dfs(GRAPH *graph, int cur_vertex, int **sequence, int *index)
 	return SUCCESS;
 }
 
+//Function to see if all the vertex were found by dfs
 int check_all_vertex(GRAPH *graph)
 {
 	int i;
@@ -167,6 +172,7 @@ int check_all_vertex(GRAPH *graph)
 	return flag;
 }
 
+//Function returns the visit_dfs array, but if the graph is cyclical, returns null
 int *graph_topological_order(GRAPH *graph)
 {
 	if(!graph) return NULL;
@@ -181,7 +187,7 @@ int *graph_topological_order(GRAPH *graph)
 	{
 		cur_vertex = find_first_vertex(graph);
 		if(cur_vertex == CYCLICAL) return NULL;
-		__graph_dfs(graph, cur_vertex, &sequence, &index);
+		graph_dfs(graph, cur_vertex, &sequence, &index);
 	}
 	if(index == -1) return NULL;
 	else return sequence;
@@ -209,9 +215,10 @@ GRAPH *graph_transpose(GRAPH *graph)
 	return transpose;
 }
 
-int graph_steps_count(GRAPH *transpose, int *sequence)
+//The transpose graph in this function represents a dependency list, so if a vertex is processed, this step of production is done
+int graph_time_count(GRAPH *transpose, int *sequence)
 {
-	int steps = 0;
+	int time = 0;
 	int i;
 	int flag;
 	DYN_LIST_SIMPLE_ELEM *next;
@@ -232,7 +239,7 @@ int graph_steps_count(GRAPH *transpose, int *sequence)
 				transpose->elem[sequence[i]]->status = processed;
 			}
 		}
-		steps++;
+		time++;
 	}
-	return steps;
+	return time;
 }

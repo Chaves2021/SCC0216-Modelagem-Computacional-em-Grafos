@@ -23,9 +23,12 @@ int main(void)
 	if(!sequence) printf("-1\n");
 	else
 	{
-		//for(i = 0; i < n_vertex; i++) printf("%d ", sequence[i]);
 		transpose = graph_transpose(graph);
-		printf("%d\n", graph_steps_count(transpose, sequence));
+		printf("%d\n", graph_time_count(transpose, sequence));
+		free(sequence);
+		graph_delete(transpose);
 	}
+
+	graph_delete(graph);
 	return SUCCESS;
 }

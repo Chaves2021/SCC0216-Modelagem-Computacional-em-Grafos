@@ -14,12 +14,11 @@ int graph_edge_remove(GRAPH *, int, int);
 int graph_print_list(GRAPH *);
 //Function to delete the graph and all memory allocated by it
 int graph_delete(GRAPH *);
-
-//TODO
+//Function to calculate the topological sort and returns an array with it
 int *graph_topological_order(GRAPH *);
-//TODO
+//Function to create a transpose graph
 GRAPH *graph_transpose(GRAPH *);
-//TODO
-int graph_steps_count(GRAPH *, int *);
+//Function to count how much time was spent to do all tasks
+int graph_time_count(GRAPH *, int *);
 
 #endif
