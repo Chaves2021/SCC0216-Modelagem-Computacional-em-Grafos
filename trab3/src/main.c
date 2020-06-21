@@ -5,7 +5,7 @@
 
 int main(void)
 {
-	GRAPH *graph;
+	GRAPH *graph, *transpose;
 	int n_vertex, n_relations;
 	int v0, v1;
 	int i;
@@ -23,6 +23,8 @@ int main(void)
 	if(!sequence) printf("-1\n");
 	else
 	{
+		//for(i = 0; i < n_vertex; i++) printf("%d ", sequence[i]);
+		transpose = graph_transpose(graph);
 	}
 	return SUCCESS;
 }
