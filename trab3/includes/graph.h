@@ -17,5 +17,7 @@ int graph_delete(GRAPH *);
 
 //TODO
 int *graph_topological_order(GRAPH *);
+//TODO
+GRAPH *graph_transpose(GRAPH *);
 
 #endif

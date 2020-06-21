@@ -188,3 +188,23 @@ int *graph_topological_order(GRAPH *graph)
 
 
 }
+
+GRAPH *graph_transpose(GRAPH *graph)
+{
+	GRAPH *transpose;
+	int i;
+	DYN_LIST_SIMPLE_ELEM *next_vertex;
+
+	transpose = graph_create(graph->count_vertex);
+	for(i = 0; i < graph->count_vertex; i++)
+	{
+		next_vertex = graph->elem[i]->list->first;
+		while(next_vertex)
+		{
+			graph_edge_insert(transpose, next_vertex->value, i);
+			next_vertex = next_vertex->next;
+		}
+	}
+
+	return transpose;
+}
