@@ -119,7 +119,11 @@ int find_first_vertex(GRAPH *graph)
 	int i;
 	for(i = 0; i < graph->count_vertex; i++)
 	{
-		if(!graph->elem[i]->in_degree) return i;
+		if(!graph->elem[i]->in_degree && 
+				graph->elem[i]->status == not_visited) 
+		{
+			return i;
+		}
 	}
 	return CYCLICAL;
 }
@@ -140,18 +144,27 @@ int __graph_dfs(GRAPH *graph, int cur_vertex, int **sequence, int *index)
 				*index != -1)
 		{
 			__graph_dfs(graph, next_vertex->value, sequence, index);
-			next_vertex = next_vertex->next;
 		}
+		next_vertex = next_vertex->next;
 	}
 	graph->elem[cur_vertex]->status = processed;
 	if(*index != -1)
 	{
-		//TODO
-		//printf("[%d]: %d\n", cur_vertex, graph->elem[cur_vertex]->value);
 		//Add in the index and after increment it
 		(*sequence)[(*index)++] = graph->elem[cur_vertex]->value;
 	}
 	return SUCCESS;
+}
+
+int check_all_vertex(GRAPH *graph)
+{
+	int i;
+	int flag = TRUE;
+	for(i = 0; i < graph->count_vertex && flag; i++)
+	{
+		if(graph->elem[i]->status != processed) flag = FALSE;
+	}
+	return flag;
 }
 
 int *graph_topological_order(GRAPH *graph)
@@ -167,6 +180,11 @@ int *graph_topological_order(GRAPH *graph)
 	sequence = (int *) malloc(graph->count_vertex * sizeof(int));
 
 	__graph_dfs(graph, cur_vertex, &sequence, &index);
+	while(!check_all_vertex(graph)) 
+	{
+		cur_vertex = find_first_vertex(graph);
+		__graph_dfs(graph, cur_vertex, &sequence, &index);
+	}
 	if(index == -1) return NULL;
 	else return sequence;
 
