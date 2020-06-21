@@ -1,5 +1,6 @@
 # Não adicionar os diretórios
 */bin/
+*/casos/
 
 # Não adicionar os tipos de arquivos
 *.pdf
