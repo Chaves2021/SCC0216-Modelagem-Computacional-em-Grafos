@@ -25,6 +25,7 @@ int main(void)
 	{
 		//for(i = 0; i < n_vertex; i++) printf("%d ", sequence[i]);
 		transpose = graph_transpose(graph);
+		printf("%d\n", graph_steps_count(transpose, sequence));
 	}
 	return SUCCESS;
 }
