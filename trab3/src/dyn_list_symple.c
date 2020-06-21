@@ -3,19 +3,6 @@
 #include <dyn_list_simple.h>
 #include <defines.h>
 
-struct dyn_list_simple_elem
-{
-	int value;
-	struct dyn_list_simple_elem *next;
-};
-
-struct dyn_list_simple
-{
-	DYN_LIST_SIMPLE_ELEM *first;
-	DYN_LIST_SIMPLE_ELEM *last;
-	int n_elem;
-};
-
 DYN_LIST_SIMPLE *dyn_list_simple_create()
 {
 	DYN_LIST_SIMPLE *list;

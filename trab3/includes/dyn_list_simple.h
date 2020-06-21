@@ -1,8 +1,20 @@
 #ifndef _DYN_LIST_SIMPLE_
 #define _DYN_LIST_SIMPLE_
 
-typedef struct dyn_list_simple DYN_LIST_SIMPLE;
+struct dyn_list_simple_elem
+{
+	int value;
+	struct dyn_list_simple_elem *next;
+};
 typedef struct dyn_list_simple_elem DYN_LIST_SIMPLE_ELEM;
+
+struct dyn_list_simple
+{
+	DYN_LIST_SIMPLE_ELEM *first;
+	DYN_LIST_SIMPLE_ELEM *last;
+	int n_elem;
+};
+typedef struct dyn_list_simple DYN_LIST_SIMPLE;
 
 //Function to create a list
 DYN_LIST_SIMPLE *dyn_list_simple_create();
