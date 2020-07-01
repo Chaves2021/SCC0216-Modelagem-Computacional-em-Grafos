@@ -124,13 +124,13 @@ int min_dist(GRAPH *graph, int *dist)
 
 	for(i = 0; i < graph->count_vertex; i++)
 	{
-		if(!graph->elem[i]->isVisited && (dist[i] < min || min == EMPTY)) 
+		if(!graph->elem[i]->isVisited && dist[i] != INFINITE && (dist[i] < min || min == EMPTY)) 
 			min = graph->elem[i]->value;
 	}
 	return min;
 }
 
-int graph_edge_relax(GRAPH *graph, int **dist, int actual)
+int graph_edge_relax(GRAPH *graph, int **dist, int **price, int **prev, int actual)
 {
 	DYN_LIST_SIMPLE_ELEM *next = graph->elem[actual]->list->first;
 	while(next)
@@ -140,6 +140,8 @@ int graph_edge_relax(GRAPH *graph, int **dist, int actual)
 			         (*dist)[next->value] > (*dist)[actual] + next->dist))
 		{
 			(*dist)[next->value] = (*dist)[actual] + next->dist;
+			(*price)[next->value] = (*price)[actual] + next->price;
+			(*prev)[next->value] = actual;
 			next = next->next;
 		}
 		else next = next->next;
@@ -152,8 +154,14 @@ int graph_dijkstra(GRAPH *graph, int source, int dest)
 {
 	int i;
 	int *dist = (int *) malloc(graph->count_vertex * sizeof(int));
+	int *price = (int *) calloc(graph->count_vertex, sizeof(int));
+	int *prev = (int *) malloc(graph->count_vertex * sizeof(int));
 	int actual = source;
-	for(i = 0; i < graph->count_vertex; i++) dist[i] = INFINITE;
+	for(i = 0; i < graph->count_vertex; i++) 
+	{
+		dist[i] = INFINITE;
+		prev[i] = EMPTY;
+	}
 
 	dist[source] = 0;
 
@@ -162,12 +170,20 @@ int graph_dijkstra(GRAPH *graph, int source, int dest)
 		if(!graph->elem[actual]->isVisited)
 		{
 			graph->elem[actual]->isVisited = TRUE;
-			graph_edge_relax(graph, &dist, actual);
+			graph_edge_relax(graph, &dist, &price, &prev, actual);
 			actual = min_dist(graph, dist);
 		}
 	}
 
-	for(i = 0; i < graph->count_vertex; i++) printf("dist[%d]: %d\n", i, dist[i]);
+	actual = dest;
+	printf("%d ", dest);
+	while(prev[actual] != EMPTY) 
+	{
+		printf("%d ", prev[actual]);
+		actual = prev[actual];
+	}
+
+	printf("\n%d %d\n", dist[dest], price[dest]);
 
 	return SUCCESS;
 }
