@@ -5,3 +5,4 @@
 #define FALSE			 0
 
 #define INFINITE		-2
+#define EMPTY			-3
