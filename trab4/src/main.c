@@ -8,7 +8,7 @@ int main(void)
 	GRAPH *graph;
 	int n_cities, n_flights;
 	int city0, city1;
-	int dist, price;
+	int time, price;
 	int source, dest;
 	int i;
 
@@ -17,8 +17,8 @@ int main(void)
 
 	for(i = 0; i < n_flights; i++)
 	{
-		scanf("%d %d %d %d", &city0, &city1, &dist, &price);
-		graph_edge_insert(graph, city0, city1, dist, price);
+		scanf("%d %d %d %d", &city0, &city1, &time, &price);
+		graph_edge_insert(graph, city0, city1, time, price);
 	}
 	scanf("%d %d", &source, &dest);
 

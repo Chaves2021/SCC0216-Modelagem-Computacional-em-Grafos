@@ -8,13 +8,9 @@ typedef struct graph GRAPH;
 GRAPH *graph_create(int);
 //Function to insert an edge in the graph list
 int graph_edge_insert(GRAPH *, int, int, int, int);
-//Function to remove an edge in the graph list
-int graph_edge_remove(GRAPH *, int, int);
-//Function to print the graph list
-int graph_print_list(GRAPH *);
 //Function to delete the graph and all memory allocated by it
 int graph_delete(GRAPH *);
-
+//TODO
 int graph_dijkstra(GRAPH *, int, int);
 
 #endif
