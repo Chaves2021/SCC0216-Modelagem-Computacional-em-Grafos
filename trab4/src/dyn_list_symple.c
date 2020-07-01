@@ -10,14 +10,14 @@ DYN_LIST_SIMPLE *dyn_list_simple_create()
 	return list;
 }
 
-int dyn_list_simple_insert(DYN_LIST_SIMPLE *list, int destination, int dist, int price)
+int dyn_list_simple_insert(DYN_LIST_SIMPLE *list, int destination, int time, int price)
 {
 	if(!list) return ERROR;
 	int exists = FALSE;
 
 	DYN_LIST_SIMPLE_ELEM *new = (DYN_LIST_SIMPLE_ELEM *) calloc(1, sizeof(DYN_LIST_SIMPLE_ELEM));
 	new->value = destination;
-	new->dist = dist;
+	new->time = time;
 	new->price = price;
 	if(!list->first && !list->last) list->first = list->last = new;
 	else

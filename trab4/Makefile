@@ -3,13 +3,13 @@ BIN=./bin/main
 INCLUDES=./includes/
 SRC=./src/graph.c ./src/dyn_list_symple.c ./src/main.c
 OPTIONS=-Wall -g -lm
-TEST=casos/1.in
+TEST=casos/2.in
 
 
 all:
 	@$(CC) $(SRC) -o $(BIN) -I$(INCLUDES) $(OPTIONS)
 run:
-	@$(BIN) < $(TEST)
+	@$(BIN) #< $(TEST)
 clean:
 	rm trab.zip
 	rm ./bin/*

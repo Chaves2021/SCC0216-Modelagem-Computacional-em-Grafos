@@ -4,7 +4,7 @@
 struct dyn_list_simple_elem
 {
 	int value;
-	int dist;
+	int time;
 	int price;
 	struct dyn_list_simple_elem *next;
 };
