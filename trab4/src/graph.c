@@ -40,13 +40,13 @@ GRAPH *graph_create(int n_vertex)
 }
 
 //The function returns an int log
-int graph_edge_insert(GRAPH *graph, int vertex0, int vertex1, int dist, int price)
+int graph_edge_insert(GRAPH *graph, int vertex0, int vertex1, int time, int price)
 {
 	if(!graph) return ERROR;
 	if(!graph->elem || !graph->elem[vertex0]) return ERROR;
 	if(!graph->elem[vertex0]->list) return ERROR;
 
-	dyn_list_simple_insert(graph->elem[vertex0]->list, vertex1, dist, price);
+	dyn_list_simple_insert(graph->elem[vertex0]->list, vertex1, time, price);
 	//dyn_list_simple_insert(graph->elem[vertex1]->list, vertex0);
 	graph->count_edges++;
 
@@ -63,24 +63,6 @@ int graph_edge_remove(GRAPH *graph, int vertex0, int vertex1)
 	dyn_list_simple_remove(graph->elem[vertex0]->list, vertex1);
 	//dyn_list_simple_remove(graph->elem[vertex1]->list, vertex0);
 	graph->count_edges--;
-
-	return SUCCESS;
-}
-
-//The function returns an int log
-int graph_print_list(GRAPH *graph)
-{
-	if(!graph) return ERROR;
-	if(!graph->elem) return ERROR;
-
-	int i;
-	for(i = 0; i < graph->count_vertex; i++) 
-	{
-		printf("%d: ", i);
-		dyn_list_simple_print(graph->elem[i]->list);
-		printf("\n");
-	}
-	printf("\n");
 
 	return SUCCESS;
 }
@@ -108,38 +90,39 @@ int graph_isVisited(GRAPH *graph)
 	int i;
 	for(i = 0; i < graph->count_vertex; i++)
 	{
-		if(!graph->elem[i]->isVisited) 
-		{
-			return FALSE;
-		}
+		if(!graph->elem[i]->isVisited) return FALSE;
 	}
 
 	return TRUE;
 }
 
-int min_dist(GRAPH *graph, int *dist)
+int min_time(GRAPH *graph, int *time)
 {
 	int i;
 	int min = EMPTY;
+	int actual = EMPTY;
 
 	for(i = 0; i < graph->count_vertex; i++)
 	{
-		if(!graph->elem[i]->isVisited && dist[i] != INFINITE && (dist[i] < min || min == EMPTY)) 
-			min = graph->elem[i]->value;
+		if(!graph->elem[i]->isVisited && time[i] != INFINITE && (min == EMPTY || time[i] < min)) 
+		{
+			actual = graph->elem[i]->value;
+			min = time[graph->elem[i]->value];
+		}
 	}
-	return min;
+	return actual;
 }
 
-int graph_edge_relax(GRAPH *graph, int **dist, int **price, int **prev, int actual)
+int graph_edge_relax(GRAPH *graph, int **time, int **price, int **prev, int actual)
 {
 	DYN_LIST_SIMPLE_ELEM *next = graph->elem[actual]->list->first;
 	while(next)
 	{
-		if(graph->elem[next->value]->isVisited == FALSE &&
-				((*dist)[next->value] == INFINITE ||
-			         (*dist)[next->value] > (*dist)[actual] + next->dist))
+		if(!graph->elem[next->value]->isVisited &&
+				((*time)[next->value] == INFINITE ||
+			         (*time)[next->value] > (*time)[actual] + next->time))
 		{
-			(*dist)[next->value] = (*dist)[actual] + next->dist;
+			(*time)[next->value] = (*time)[actual] + next->time;
 			(*price)[next->value] = (*price)[actual] + next->price;
 			(*prev)[next->value] = actual;
 			next = next->next;
@@ -150,40 +133,43 @@ int graph_edge_relax(GRAPH *graph, int **dist, int **price, int **prev, int actu
 	return SUCCESS;
 }
 
+int print_path(int *prev, int actual)
+{
+	if(prev[actual] != EMPTY) printf("%d ", print_path(prev, prev[actual]));
+
+	return actual;
+}
+
 int graph_dijkstra(GRAPH *graph, int source, int dest)
 {
 	int i;
-	int *dist = (int *) malloc(graph->count_vertex * sizeof(int));
+	int *time = (int *) malloc(graph->count_vertex * sizeof(int));
 	int *price = (int *) calloc(graph->count_vertex, sizeof(int));
 	int *prev = (int *) malloc(graph->count_vertex * sizeof(int));
 	int actual = source;
 	for(i = 0; i < graph->count_vertex; i++) 
 	{
-		dist[i] = INFINITE;
+		time[i] = INFINITE;
 		prev[i] = EMPTY;
 	}
 
-	dist[source] = 0;
+	time[source] = 0;
 
-	while(!graph_isVisited(graph))
+	while(!graph_isVisited(graph) && actual != EMPTY)
 	{
 		if(!graph->elem[actual]->isVisited)
 		{
 			graph->elem[actual]->isVisited = TRUE;
-			graph_edge_relax(graph, &dist, &price, &prev, actual);
-			actual = min_dist(graph, dist);
+			graph_edge_relax(graph, &time, &price, &prev, actual);
+			actual = min_time(graph, time);
 		}
 	}
 
 	actual = dest;
-	printf("%d ", dest);
-	while(prev[actual] != EMPTY) 
-	{
-		printf("%d ", prev[actual]);
-		actual = prev[actual];
-	}
 
-	printf("\n%d %d\n", dist[dest], price[dest]);
+	printf("%d ", print_path(prev, actual));
+	
+	printf("\n%d %d\n", time[dest], price[dest]);
 
 	return SUCCESS;
 }
