@@ -34,8 +34,6 @@ GRAPH *graph_create(int n_vertex)
 		graph->elem[i] = (GRAPH_ELEM *) malloc(sizeof(GRAPH_ELEM));
 		graph->elem[i]->list = dyn_list_simple_create();
 		graph->elem[i]->value = i;
-		graph->elem[i]->in_degree = 0;
-		graph->elem[i]->out_degree = 0;
 	}
 
 	return graph;
@@ -49,8 +47,6 @@ int graph_edge_insert(GRAPH *graph, int vertex0, int vertex1, int dist, int pric
 	if(!graph->elem[vertex0]->list) return ERROR;
 
 	dyn_list_simple_insert(graph->elem[vertex0]->list, vertex1, dist, price);
-	graph->elem[vertex0]->out_degree++;
-	graph->elem[vertex1]->in_degree++;
 	//dyn_list_simple_insert(graph->elem[vertex1]->list, vertex0);
 	graph->count_edges++;
 
@@ -109,17 +105,34 @@ int graph_delete(GRAPH *graph)
 
 int graph_isVisited(GRAPH *graph)
 {
+	int i;
 	for(i = 0; i < graph->count_vertex; i++)
 	{
-		if(!graph->elem[i]->isVisited) return FALSE;
+		if(!graph->elem[i]->isVisited) 
+		{
+			return FALSE;
+		}
 	}
 
 	return TRUE;
 }
 
+int min_dist(GRAPH *graph, int *dist)
+{
+	int i;
+	int min = EMPTY;
+
+	for(i = 0; i < graph->count_vertex; i++)
+	{
+		if(!graph->elem[i]->isVisited && (dist[i] < min || min == EMPTY)) 
+			min = graph->elem[i]->value;
+	}
+	return min;
+}
+
 int graph_edge_relax(GRAPH *graph, int **dist, int actual)
 {
-	DYN_LIST_SIMPLE_ELEM next = graph->elem[actual]->list->first;
+	DYN_LIST_SIMPLE_ELEM *next = graph->elem[actual]->list->first;
 	while(next)
 	{
 		if(graph->elem[next->value]->isVisited == FALSE &&
@@ -137,15 +150,11 @@ int graph_edge_relax(GRAPH *graph, int **dist, int actual)
 
 int graph_dijkstra(GRAPH *graph, int source, int dest)
 {
+	int i;
 	int *dist = (int *) malloc(graph->count_vertex * sizeof(int));
-	//TODO
-	//int *prev = (int *) malloc(graph->count_vertex * sizeof(int));
 	int actual = source;
-	for(i = 0; i < graph->count_vertex; i++) 
-	{
-		dist[i] = INFINITE;
-		//prev[i] = -1;
-	}
+	for(i = 0; i < graph->count_vertex; i++) dist[i] = INFINITE;
+
 	dist[source] = 0;
 
 	while(!graph_isVisited(graph))
@@ -154,7 +163,11 @@ int graph_dijkstra(GRAPH *graph, int source, int dest)
 		{
 			graph->elem[actual]->isVisited = TRUE;
 			graph_edge_relax(graph, &dist, actual);
+			actual = min_dist(graph, dist);
 		}
 	}
 
+	for(i = 0; i < graph->count_vertex; i++) printf("dist[%d]: %d\n", i, dist[i]);
+
+	return SUCCESS;
 }
